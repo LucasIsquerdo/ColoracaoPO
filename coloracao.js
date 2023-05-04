@@ -1,14 +1,8 @@
-//vertices adjacentes possuem cores diferentes
-
-//para grafos completos: vai possuir a quantidade de cores correspondente a quantidade de vertices fornecido pelo usuario 
-
-//para bipartido: possui mais de um conjunto.
-
-//ALGORITMO MAIOR PRIMEIRO: 
-//para inserir na fila -> busca em largura usando a ordem do maior grau.
-//obs: pego a fila que tem maior quantidade de vertices, o primeiro elemento a fila pega a cor 1 da tabela ja que ele foi o primeiro a ser comparado, os outros vertices recebem X na cor. Depois a ordem que vai pegar é a dos proximos vertices da fila que estava aquele valor, e verificar se ele ja tem cor atribuida ou se precisa setar alguma cor. Ai tem que verificar se eles sao adjacentes, senao for o elemento pode assumir uma cor que ja foi setada para outro vertice. Se nao for vizinho, pode trocar o X e assumir o Numero que o vertice tem na fila. 
-
 const List = [];// A,B,C,D
+var fila = [];
+var filaAux = [];
+var linha = [];
+var coluna = [];
 var array = []
 var onlyLettersList = []
 var connectionList = []
@@ -375,27 +369,10 @@ function grafoCompleto()
     console.log(GrafhCompleto);
 }
 
-
-var fila = [];
-var filaAux = [];
-var linha = [];
-var coluna = [];
-
-
+//criando um array com os vertices como indice
 function MaiorPrimeiro()
 {
 
-    let maior=0;
-    let pos =0
-    // console.log(array);
-    for(let i=0; i<array.length; i++)
-    {
-        // console.log(pos);
-        if(array[i].length>maior){
-            maior = array[i].length
-            pos = i
-        }
-    }
     var totalColors = []
     for(let j=0;j<array.length;j++)
     {
@@ -404,29 +381,31 @@ function MaiorPrimeiro()
     }
     
     console.log(totalColors);
-    colorsF = welshPowell(totalColors)
+    colorsF = solution(totalColors)
     
 }
 
-function welshPowell(grafo) {
-  // Ordena os vértices do grafo em ordem decrescente de grau
-  const vertices = Object.keys(grafo).sort((a, b) => grafo[b].length - grafo[a].length);
+//resolve a coloracao em si
+function solution(graph) {
+
+  // ordenando os vertices,keys: ex: [a,b,c] -> [0,1,2]
+  var vertices = Object.keys(graph).sort((a, b) => graph[b].length - graph[a].length);
   
-  // Inicializa o vetor de cores
-  const cores = new Array(vertices.length).fill(0);
+  // cria um vetor de "cores", o fill preenche todo o array com 0
+  var colorsA = new Array(vertices.length).fill(0);
+    
+  // vértice maior recebe a primeira cor
+  colorsA[vertices[0]] = 1;
   
-  // Atribui a cor 1 ao vértice de maior grau
-  cores[vertices[0]] = 1;
-  
-  // Itera sobre os vértices restantes, atribuindo cores
+  // atribuindo cores aos restantes
   for (let i = 1; i < vertices.length; i++) {
-    const vertice = vertices[i];
-    let cor = 1;
-    while (grafo[vertice].some(vizinho => cores[vizinho] === cor)) {
-      cor++;
+    var vertice = vertices[i];
+    let colorNum = 1;//o metodo some verifica se ao menos 1 elemento combina com a condição
+    while (graph[vertice].some(neighbor => colorsA[neighbor] === colorNum)) {
+      colorNum++;
     }
-    cores[vertice] = cor;
+    colorsA[vertice] = colorNum;
   }
   
-  return cores;
+  return colorsA;
 }
